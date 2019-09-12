@@ -64,7 +64,7 @@
                                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <state key="normal" title="+/-"/>
                                                                 <connections>
-                                                                    <action selector="OperatorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wHk-O2-5IW"/>
+                                                                    <action selector="SingleOperatorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BkY-lT-aPF"/>
                                                                 </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="quK-uO-I3a">
@@ -74,7 +74,7 @@
                                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <state key="normal" title="%"/>
                                                                 <connections>
-                                                                    <action selector="OperatorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HsE-UY-4NQ"/>
+                                                                    <action selector="SingleOperatorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="I5B-GW-ara"/>
                                                                 </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NtL-rd-CEw">
