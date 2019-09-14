@@ -18,84 +18,129 @@ class ViewController: UIViewController {
     var secondNum:Double = 0
     var operatorCount:Int = 0
     var currentOperator:String = ""
-    var beforeOperator:Bool = true
+    var singleOperator:String = ""
+    var hasNewInput:Bool = true
+    var hasCalculated:Bool = false
+    var dotInput:Bool = false
+    var hasPercentage:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-    
-    
-    
-    @IBAction func DigitsPressed(_ sender: UIButton) {
-        if !beforeOperator{
-            UpdateScreen(currentResult: "")
-            beforeOperator = false
-        }
-        if resultLabel.text == "0" && sender.titleLabel?.text != "."{
-            resultLabel.text = ""
-        }
-            resultLabel.text! += sender.titleLabel!.text!
-    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
     }
     
+    //press 0 1 2 3 4 5 6 7 8 9 .
+    @IBAction func DigitsPressed(_ sender: UIButton) {
+        if sender.titleLabel?.text != "."{
+            if !hasNewInput || hasPercentage{
+                UpdateScreen(currentResult: "")
+                hasNewInput = true
+                hasPercentage = false
+            }
+            if resultLabel.text == "0"{
+                resultLabel.text = ""
+            }
+            resultLabel.text! += sender.titleLabel!.text!
+            hasCalculated = false
+        }else{
+            if !hasNewInput || hasPercentage{
+                UpdateScreen(currentResult: "0")
+                hasNewInput = true
+                hasPercentage = false
+            }
+            if !(resultLabel.text?.contains("."))!{
+                resultLabel.text! += "."
+            }
+            hasCalculated = false
+        }
+        
+    
+    }
+    //press C
     @IBAction func ClearScreenPressed(_ sender: UIButton) {
         
         UpdateScreen(currentResult: "0")
-        operatorCount = 0
         firstNum = 0
         secondNum = 0
-        beforeOperator = true
+        operatorCount = 0
+        currentOperator = ""
+        singleOperator = ""
+        hasNewInput = true
+        hasCalculated = false
+        dotInput = false
     }
-    
+    //press +/-  %
     @IBAction func SingleOperatorPressed(_ sender: UIButton) {
-        currentOperator = sender.titleLabel!.text!
-        if currentOperator == "+/-"{
-            let temp = resultLabel.text
-            
-            
+        singleOperator = sender.titleLabel!.text!
+        let tempResult = Double(resultLabel.text!)!
+        if singleOperator == "+/-"{
+            resultLabel.text = "\(-tempResult)"
         }else{
-            if beforeOperator{
-                firstNum /= 100
-                UpdateScreen(currentResult: "\(firstNum)")
-            }else{
-                secondNum /= 100
-                UpdateScreen(currentResult: "\(secondNum)")
-            }
-            
+            resultLabel.text = "\(tempResult/100)"
+            hasNewInput = true
+            hasPercentage = true
         }
     }
+    //pressed + - x /
     @IBAction func OperatorPressed(_ sender: UIButton) {
-        operatorCount += 1
-        if operatorCount == 1{
-            currentOperator = sender.titleLabel!.text!
-            firstNum = Double(resultLabel.text!)!
+        if hasNewInput{
+            operatorCount += 1
+            //first input
+            if operatorCount == 1 && !hasCalculated{
+                currentOperator = sender.titleLabel!.text!
+                firstNum = Double(resultLabel.text!)!
+            }else{
+                secondNum = Double(resultLabel.text!)!
+                firstNum = Calculator(firstInput: firstNum, secondInput: secondNum, expression: currentOperator)
+                print("Digits time: firstNum \(firstNum) \(currentOperator) \(secondNum)")
+                UpdateScreen(currentResult: "\(firstNum)")
+                currentOperator = sender.titleLabel!.text!
+            }
+            hasNewInput = false
+            dotInput = false
+            
         }else{
+            currentOperator = sender.titleLabel!.text!
+            print("Digits operator: \(currentOperator)")
+        }
+    }
+    //Pressed =
+    @IBAction func CalculatePressed(_ sender: UIButton) {
+        if hasNewInput{
             secondNum = Double(resultLabel.text!)!
+            print("Before = : firstNum \(firstNum) \(currentOperator) \(secondNum)")
             firstNum = Calculator(firstInput: firstNum, secondInput: secondNum, expression: currentOperator)
             UpdateScreen(currentResult: "\(firstNum)")
-            currentOperator = sender.titleLabel!.text!
+            hasNewInput = false
+            hasCalculated = true
+            dotInput = false
         }
-        beforeOperator = false
+        operatorCount = 0
+        
     }
-    
-    @IBAction func CalculatePressed(_ sender: UIButton) {
-        secondNum = Double(resultLabel.text!)!
-        let result = Calculator(firstInput: firstNum, secondInput: secondNum, expression: currentOperator)
-        UpdateScreen(currentResult: "\(result)")
-    }
+    //calculate result
     func Calculator(firstInput:Double, secondInput:Double,expression:String) -> Double{
-        if expression == "+"{
+        //reset second number
+        secondNum = 0
+        switch expression{
+        case "+":
             return firstInput + secondInput
-        }else if expression == "-"{
+        case "-":
             return firstInput - secondInput
-        }else if expression == "x"{
+        case "x":
             return firstInput * secondInput
-        }else{
-            guard let value = try? firstInput / secondInput else{
+        case "÷":
+            if secondInput == 0
+            {
                 return 0
+            }else{
+                return firstInput / secondInput
             }
-            return value
+        default:
+            return 0
         }
     }
     //update the result on screen
