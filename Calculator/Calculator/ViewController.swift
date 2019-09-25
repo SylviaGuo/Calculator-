@@ -12,26 +12,26 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var resultLabel: UILabel!
     
-    var firstNum:Double = 0
-    var secondNum:Double = 0
+    var firstNum:Double = 0//store first input and result
+    var secondNum:Double = 0//store inputs after first input
     var operatorCount:Int = 0
     var currentOperator:String = ""
     var singleOperator:String = ""
     var hasNewInput:Bool = false
     var hasCalculated:Bool = false
     
-    enum CalculateError: Error{
-        case DivideByZeroError
-        case TransferError
-    }
-    func ThrowError(type: Int) throws ->Double{
-        if type == 0 {
-            throw CalculateError.DivideByZeroError
-        }else if type == 1 {
-            throw CalculateError.TransferError
-        }
-        return 0
-    }
+//    enum CalculateError: Error{
+//        case DivideByZeroError
+//        case TransferError
+//    }
+//    func ThrowError(type: Int) throws ->Double{
+//        if type == 0 {
+//            throw CalculateError.DivideByZeroError
+//        }else if type == 1 {
+//            throw CalculateError.TransferError
+//        }
+//        return 0
+//    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -56,13 +56,13 @@ class ViewController: UIViewController {
             }
             resultLabel.text! += sender.titleLabel!.text!
             hasCalculated = false
-        }else{
+        }else{//input .
             if !hasNewInput {
                 UpdateScreen(currentResult: "0")
                 hasNewInput = true
                 if currentOperator == ""{
                     operatorCount = 0
-                    print("No Operator")
+                    //print("No Operator")
                 }
             }
             //make sure only one . allow
@@ -74,7 +74,7 @@ class ViewController: UIViewController {
         
     
     }
-    //press C
+    //press C clear all
     @IBAction func ClearScreenPressed(_ sender: UIButton) {
         
         UpdateScreen(currentResult: "0")
@@ -91,12 +91,12 @@ class ViewController: UIViewController {
         if resultLabel!.text != "-"{
             singleOperator = sender.titleLabel!.text!
             let temp = Double(resultLabel.text!)!
-            print(temp)
             if singleOperator == "+/-"{
                 if !hasNewInput {
                     //press afeter calculated
                     if hasCalculated{
                         UpdateScreen(currentResult:"\(-temp)")
+                        firstNum = -temp
                     }else{//press before input a number
                         resultLabel.text = "-"
                         hasNewInput = true
@@ -109,7 +109,6 @@ class ViewController: UIViewController {
                 UpdateScreen(currentResult:"\(tempRestult)")
                 if hasCalculated{
                     firstNum = tempRestult
-                    print("firstNum:\(firstNum),hasCalculated\(hasCalculated)")
                 }
             }else{
                 print("unknow singleOperator:\(singleOperator)")
@@ -123,7 +122,6 @@ class ViewController: UIViewController {
             operatorCount += 1
             //first input
             if operatorCount == 1 && !hasCalculated{
-                print("operatorCount:\(operatorCount),!hasCaulculated:\(!hasCalculated)")
                 currentOperator = sender.titleLabel!.text!
                 firstNum = Double(resultLabel.text!)!
             }else{//second or more inputs
@@ -136,7 +134,7 @@ class ViewController: UIViewController {
             }
             hasNewInput = false
             
-        }else{
+        }else{//no inputs
             currentOperator = sender.titleLabel!.text!
             print("CurrentOperator: \(currentOperator)")
         }
@@ -166,12 +164,7 @@ class ViewController: UIViewController {
         case "x":
             return firstInput * secondInput
         case "÷":
-//            do {
-//                var result = try firstInput / secondInput
-//            } catch {
-//                print(error)
-//                return 0
-//            }
+            //error handling
             guard secondInput != 0 else{
                 return 0
             }
@@ -184,20 +177,8 @@ class ViewController: UIViewController {
     func UpdateScreen(currentResult:String){
         let newResult = deleteInvalidNum(num: currentResult)
         resultLabel.text = newResult
-//        if currentResult.contains(".")
-//        {
-//            var strings = currentResult.components(separatedBy: ".")
-//            let iszeros: Int = Int (strings[1])!
-//            if iszeros == 0{
-//                resultLabel.text = strings[0]
-//            }else{
-//                resultLabel.text = currentResult
-//            }
-//
-//        }else{
-//            resultLabel.text = currentResult
-//        }
     }
+
     
     //delete invalid 0
     func deleteInvalidNum(num:String) ->String{
